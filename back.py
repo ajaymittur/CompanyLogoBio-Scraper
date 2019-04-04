@@ -7,7 +7,7 @@ Created on 2019-04-04 @ 11:15
         
 """
 
-from flask import Flask, request
+from flask import Flask, request, send_file
 from werkzeug.utils import secure_filename
 import requests
 from bs4 import BeautifulSoup
@@ -15,39 +15,31 @@ import re
 import os
 import scrape
 import uuid
-
+import data_process
+import pandas as pd
 #url = 'https://twitter.com/Tesla'
 
 app = Flask(__name__)
+UPLOAD_FOLDER = ''
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/result', methods = ['GET', 'POST'])
 def result():
-    if request.method == 'POST':
-        try:
-            f = request.files['file']
-            if '.csv' not in f.filename:
-                filename = None
-            else:
-                filename = str(uuid.uuid4())
-                f.save(secure_filename(filename))
-        except:
-            filename = None
-        url_list = request.form['url']
-        ld = request.form['ld']
-        rtype = request.form['rtype']
-        r_file = data_process.input_process(rtype = rtype, csv = filename, text = url_list, ld = ld)
-        send_file(r_file)
-        logo = scrape.get_twitter_logo(url_list)
-        desc = scrape.get_twitter_desc(url_list)
-        if logo and desc:
-            return f"""
-            <img src="{logo}">
-            <br>
-            <a href="{desc[0]}">Website link</a>
-            <br>
-            <p>{desc[1]}</p>
-            """
-        return "No information is given"
+    try:
+        f = request.files['file']
+        f.save('check.csv')
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4()) + '.csv')
+        f.save(secure_filename(filename))
+        print(pd.read_csv(filename))
+    except:
+        filename = None
+    url_list = request.form['url']
+    ld = request.form['ld']
+    rtype = request.form['rtype']
+    r_file = data_process.input_process(rtype = rtype, file = filename, text = url_list, ld = ld)
+    if filename != None:
+        os.remove(filename)
+    return send_file(r_file)
 
 if __name__ == '__main__':
     app.run(debug = True)

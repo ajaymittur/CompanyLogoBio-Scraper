@@ -13,21 +13,27 @@ import scrape
 import uuid
 
 def get_csv_df(file):
+    print(file)
     return pd.read_csv(file, header=None)
 
 def get_string_df(string):
-    return pd.DataFrame(string.split())
+    text = string.split()
+    return pd.DataFrame(text)
 
 def concat_df(csv,string):
-    return csv.append(string, ignore_index=True)
+    csv_file = get_csv_df(csv)
+    print(csv_file)
+    if csv_file.empty():
+        return get_string_df(string)
+    return csv_file.append(get_string_df(string), ignore_index=True)
 
 def return_csv(df):
-    filename = str(uuid.uuid4())
+    filename = str(uuid.uuid4()) + '.csv'
     df.to_csv(filename)
     return filename
 
 def return_json(df):
-    filename = str(uuid.uuid4())
+    filename = str(uuid.uuid4()) + '.json'
     df.to_json(filename)
     return filename
 
@@ -40,11 +46,11 @@ def input_process(**params):
     ld = specifies logo or description. Logo by default. Option between 'l' or ' d'
     type : return type, .csv by default. Option between 'csv' and 'json'
     """
-    if params['file'] and params['text']:
+    if params['file'] != None and params['text'] != None:
         df = concat_df(params['file'],params['text'])
-    elif params['file']:
+    elif params['file'] != None:
         df = get_csv_df(params['file'])
-    elif params['text']:
+    elif params['text'] != None:
         df = get_string_df(params['text'])
     else:
         if params['rtype'] == 'json':
@@ -53,9 +59,9 @@ def input_process(**params):
             return 'invalid.csv'
 
     if params['rtype'] == 'json':
-        return return_json(scrape.return_scraped_df(df, params['ld']))
+        return return_json(scrape.return_scraped_df(df = df, ld = params['ld']))
     
-    return return_csv(scrape.return_scraped_df(df))
+    return return_csv(scrape.return_scraped_df(df = df, ld = params['ld']))
 
 
 
