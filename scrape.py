@@ -34,5 +34,8 @@ def get_twitter_desc(url):
         description_tags = desc_soup.find_all('meta', attrs={'property': 'og:description'})
         description_tag = description_tags[0]
         company_desc = description_tag['content']
-        
+
         return [company_url, company_desc]
+
+def return_scraped_df(df, type):
+        return None

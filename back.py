@@ -13,7 +13,8 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import os
-import ScrapeTwitter
+import scrape
+import uuid
 
 #url = 'https://twitter.com/Tesla'
 
@@ -22,12 +23,22 @@ app = Flask(__name__)
 @app.route('/result', methods = ['GET', 'POST'])
 def result():
     if request.method == 'POST':
-        f = request.files['file']
-        f.save(secure_filename(f.filename))
-        print("got file")
-        url = request.form['url']
-        logo = ScrapeTwitter.get_twitter_logo(url)
-        desc = ScrapeTwitter.get_twitter_desc(url)
+        try:
+            f = request.files['file']
+            if '.csv' not in f.filename:
+                filename = None
+            else:
+                filename = str(uuid.uuid4())
+                f.save(secure_filename(filename))
+        except:
+            filename = None
+        url_list = request.form['url']
+        ld = request.form['ld']
+        rtype = request.form['rtype']
+        r_file = data_process.input_process(rtype = rtype, csv = filename, text = url_list, ld = ld)
+        send_file(r_file)
+        logo = scrape.get_twitter_logo(url_list)
+        desc = scrape.get_twitter_desc(url_list)
         if logo and desc:
             return f"""
             <img src="{logo}">
