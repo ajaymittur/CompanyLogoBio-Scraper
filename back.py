@@ -13,7 +13,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import os
-from ScrapeTwitter import getData
+import ScrapeTwitter
 
 #url = 'https://twitter.com/Tesla'
 
@@ -26,14 +26,15 @@ def result():
         f.save(secure_filename(f.filename))
         print("got file")
         url = request.form['url']
-        ans = getData(url)
-        if ans:
+        logo = ScrapeTwitter.get_twitter_logo(url)
+        desc = ScrapeTwitter.get_twitter_desc(url)
+        if logo and desc:
             return f"""
-            <img src="{ans[1]}">
+            <img src="{logo}">
             <br>
-            <a href="{ans[0]}">Website link</a>
+            <a href="{desc[0]}">Website link</a>
             <br>
-            <p>{ans[2]}</p>
+            <p>{desc[1]}</p>
             """
         return "No information is given"
 
