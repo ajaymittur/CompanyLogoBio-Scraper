@@ -22,9 +22,6 @@ def get_string_df(string):
 
 def concat_df(csv,string):
     csv_file = get_csv_df(csv)
-    print(csv_file)
-    if csv_file.empty():
-        return get_string_df(string)
     return csv_file.append(get_string_df(string), ignore_index=True)
 
 def return_csv(df):

@@ -27,13 +27,14 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def result():
     try:
         f = request.files['file']
-        f.save('check.csv')
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4()) + '.csv')
+        filename = str(uuid.uuid4()) + '.csv'
         f.save(secure_filename(filename))
-        print(pd.read_csv(filename))
     except:
         filename = None
-    url_list = request.form['url']
+    try:
+        url_list = request.form['url']
+    except:
+        url_list = None
     ld = request.form['ld']
     rtype = request.form['rtype']
     r_file = data_process.input_process(rtype = rtype, file = filename, text = url_list, ld = ld)
