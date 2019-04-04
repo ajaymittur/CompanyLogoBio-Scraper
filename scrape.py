@@ -28,15 +28,17 @@ def get_twitter_logo(url):
 def get_company_desc(url):
     response = requests.get(url)
     desc_soup = BeautifulSoup(response.text, 'html.parser')
-    description_tags = desc_soup.find_all('meta', attrs={'property': 'og:description'})
+    description_tags = desc_soup.find_all('meta', attrs={'name': 'description'})
+    print(description_tags)
     description_tag = description_tags[0]
     company_desc = description_tag['content']
     return company_desc
 
 def get_twitter_desc(url):
     response = requests.get(url)
-    logo_soup = BeautifulSoup(response.text, 'html.parser')
-    description_tags = desc_soup.find_all('meta', attrs={'property': 'og:description'})
+    desc_soup = BeautifulSoup(response.text, 'html.parser')
+    description_tags = desc_soup.find_all('meta', attrs={'name': 'description'})
+    print(description_tags)
     description_tag = description_tags[0]
     company_desc = description_tag['content']
     return company_desc
@@ -46,7 +48,6 @@ def get_logo(url):
         return get_twitter_logo(url)
     else:
         return get_company_logo(url)
-
 
 def get_desc(url):
     if 'twitter.com' in url:
