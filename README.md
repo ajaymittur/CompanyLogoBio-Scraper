@@ -19,5 +19,5 @@ Libraries Used:
   5. os
   
 Current Progress:
-  Currently includes barebones front end and backend with a test module for twitter processing. 
+  \[COMPLETED\] Currently includes barebones front end and backend with a test module for twitter processing. 
   Input options expanded for text type and file type have been added along with output options which include JSON and csv filetypes, and     worker module for processing added.
